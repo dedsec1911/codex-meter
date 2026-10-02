@@ -68,6 +68,20 @@ Thresholds use the rounded percentage shown on screen. The tray icon follows the
 
 ## How it works
 
+### MacBook Touch Bar
+
+On Macs with a Touch Bar, Codex Meter displays **5h …% left** and **Weekly …% left** in green, yellow, or red, plus **Refresh** and **Mini/Details** buttons. It uses the same quota selection and refresh interval as the widget and marks failed reads as stale.
+
+Touch Bar support is enabled by default on macOS. Toggle **Settings → Show on Touch Bar** or **Touch Bar · when app is focused** in the tray menu. This preference survives restarts. Macs without Touch Bar hardware continue to use the desktop widget normally.
+
+The native controls belong to Codex Meter's focused window. Switching to another app gives that app control of the Touch Bar; an always-on-top mini window does not keep these controls visible when it loses focus. This version does not replace the system Control Strip. See the [Electron Touch Bar API](https://www.electronjs.org/docs/latest/api/touch-bar).
+
+<img src="docs/screenshots/touchbar.png" alt="MacBook Touch Bar showing green 5-hour quota, yellow weekly quota, Refresh, and Mini controls">
+
+The screenshot was captured from a Touch Bar on Intel macOS using sample quotas. Native control creation, updates, and the preference toggle are also covered by the macOS desktop smoke test. Physical touch interactions and other MacBook models still need on-device validation.
+
+### Local usage connection
+
 Electron provides the windows and tray. Each refresh starts `codex app-server`, initializes its stdio connection, requests [`account/rateLimits/read`](https://learn.chatgpt.com/docs/app-server), and closes the process. No inference requests are made. Short polling intervals start more processes and network requests; 15 seconds is a reasonable default.
 
 The widget does not read or copy auth tokens. Codex handles its own credentials and network connection. Codex Meter has no analytics or usage-history database. It saves the refresh interval, executable preference, view, mini-window position, selected quota bucket, and always-on-top preference locally.

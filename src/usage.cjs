@@ -3,6 +3,7 @@ const { createInterface } = require("node:readline");
 const fs = require("node:fs");
 const path = require("node:path");
 const os = require("node:os");
+const { version } = require("../package.json");
 
 function candidates(
   override,
@@ -216,7 +217,7 @@ function readUsage(
         clientInfo: {
           name: "codex_meter",
           title: "Codex Meter",
-          version: "0.1.0",
+          version,
         },
         capabilities: null,
       },

@@ -17,6 +17,8 @@ function resetText(seconds) {
 }
 function render(next) {
   state = next;
+  $("touch-bar-setting").hidden = !next.touchBarSupported;
+  $("touch-bar-enabled").checked = !!next.touchBarEnabled;
   $("interval").value = String(next.refreshSeconds ?? 15);
   $("interval-note").textContent =
     next.refreshSeconds > 0 && next.refreshSeconds < 10
@@ -109,6 +111,13 @@ $("interval").addEventListener("change", async (event) => {
   }
 });
 window.meter.onUsage(render);
+$("touch-bar-enabled").addEventListener("change", async (event) => {
+  try {
+    await window.meter.setTouchBarEnabled(event.target.checked);
+  } catch {
+    $("touch-bar-enabled").checked = !!state.touchBarEnabled;
+  }
+});
 window.meter.getUsage().then(render);
 setInterval(() => {
   if (state) render(state);

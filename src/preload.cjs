@@ -2,6 +2,8 @@ const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("meter", {
   getUsage: () => ipcRenderer.invoke("get-usage"),
   refresh: () => ipcRenderer.invoke("refresh"),
+  setTouchBarEnabled: (enabled) =>
+    ipcRenderer.invoke("set-touch-bar-enabled", enabled),
   setRefreshInterval: (seconds) =>
     ipcRenderer.invoke("set-refresh-interval", seconds),
   setViewMode: (mode) => ipcRenderer.invoke("set-view-mode", mode),

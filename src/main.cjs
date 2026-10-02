@@ -8,6 +8,7 @@ const {
   dialog,
   powerMonitor,
   screen,
+  TouchBar,
 } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path");
@@ -20,6 +21,10 @@ const {
   createScheduler,
 } = require("./refresh-settings.cjs");
 const { band } = require("./gauge.js");
+const { createTouchBarController } = require("./touch-bar.cjs");
+const touchBarSupported =
+  process.platform === "darwin" && typeof TouchBar === "function";
+let touchBarController;
 const demoSmoke = process.argv.includes("--smoke-demo");
 const statusIcons = {};
 // Use a separate app profile before acquiring the single-instance lock.
@@ -44,6 +49,10 @@ function save() {
 function publish() {
   state.refreshSeconds = settings.refreshSeconds;
   state.selectedBucketId = settings.selectedBucketId;
+  state.touchBarSupported = touchBarSupported;
+  state.touchBarEnabled =
+    touchBarSupported && settings.touchBarEnabled !== false;
+  touchBarController?.update(state);
   win?.webContents.send("usage", state);
   mini?.webContents.send("usage", state);
   const bucket =
@@ -150,6 +159,15 @@ function setRefreshInterval(seconds) {
   publish();
   return seconds;
 }
+function setTouchBarEnabled(enabled) {
+  if (!touchBarSupported || typeof enabled !== "boolean")
+    throw new Error("Touch Bar is available only on macOS.");
+  settings.touchBarEnabled = enabled;
+  save();
+  touchBarController.setEnabled(enabled);
+  menu();
+  publish();
+}
 function menu() {
   tray.setContextMenu(
     Menu.buildFromTemplate([
@@ -167,6 +185,16 @@ function menu() {
         click: () => setViewMode("full"),
       },
       { label: "Refresh usage", click: refresh },
+      ...(touchBarSupported
+        ? [
+            {
+              label: "Touch Bar · when app is focused",
+              type: "checkbox",
+              checked: settings.touchBarEnabled !== false,
+              click: (item) => setTouchBarEnabled(item.checked),
+            },
+          ]
+        : []),
       {
         label: "Refresh interval",
         submenu: INTERVALS.map((seconds) => ({
@@ -247,9 +275,9 @@ else {
       show: false,
       icon: appIcon,
       width: 380,
-      height: 660,
+      height: touchBarSupported ? 725 : 660,
       minWidth: 340,
-      minHeight: 650,
+      minHeight: touchBarSupported ? 715 : 650,
       title: "Codex Meter",
       backgroundColor: "#101513",
       alwaysOnTop: !!settings.onTop,
@@ -311,6 +339,17 @@ else {
       }, 200);
     });
     mini.on("closed", () => clearTimeout(moveTimer));
+    if (touchBarSupported) {
+      touchBarController = createTouchBarController(
+        TouchBar,
+        [
+          { window: win, mode: "full" },
+          { window: mini, mode: "mini" },
+        ],
+        { refresh, setViewMode },
+      );
+      touchBarController.setEnabled(settings.touchBarEnabled !== false);
+    }
     const miniReady = mini.loadFile(path.join(__dirname, "mini.html"));
     tray = new Tray(appIcon.resize({ width: 20, height: 20 }));
     tray.on("click", show);
@@ -326,6 +365,9 @@ else {
     });
     ipcMain.handle("get-usage", () => state);
     ipcMain.handle("refresh", () => refresh());
+    ipcMain.handle("set-touch-bar-enabled", (_event, enabled) =>
+      setTouchBarEnabled(enabled),
+    );
     ipcMain.handle("set-refresh-interval", (_event, seconds) =>
       setRefreshInterval(seconds),
     );
@@ -363,6 +405,32 @@ else {
             return;
           }
           setRefreshInterval(originalInterval);
+          if (touchBarSupported) {
+            const originalTouchBarEnabled = settings.touchBarEnabled !== false;
+            const view = touchBarController.update(state);
+            if (!view.short.label.includes("% left"))
+              throw new Error("Touch Bar quota update failed");
+            await win.webContents.executeJavaScript(
+              "window.meter.setTouchBarEnabled(false)",
+            );
+            if (
+              settings.touchBarEnabled !== false ||
+              state.touchBarEnabled !== false
+            )
+              throw new Error("Touch Bar disable failed");
+            await win.webContents.executeJavaScript(
+              "window.meter.setTouchBarEnabled(true)",
+            );
+            if (
+              JSON.parse(fs.readFileSync(settingsPath(), "utf8"))
+                .touchBarEnabled !== true
+            )
+              throw new Error("Touch Bar preference not saved");
+            setTouchBarEnabled(originalTouchBarEnabled);
+            console.log(
+              "Native Touch Bar creation, quota updates, and toggle passed (hardware display not verified).",
+            );
+          }
           await win.webContents.executeJavaScript(
             'document.getElementById("settings").open = true',
           );

@@ -215,3 +215,12 @@ summary {
 .red progress::-webkit-progress-value {
   background: #ff4e56;
 }
+.setting-note {
+  font-size: 10px;
+  color: #93a79b;
+  line-height: 1.4;
+  margin: 8px 0 0;
+}
+#touch-bar-enabled {
+  accent-color: #32e58e;
+}
