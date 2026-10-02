@@ -101,6 +101,10 @@ npm run dist -- --win --x64 --publish never
 
 GitHub Actions runs tests and builds on Intel macOS, Apple Silicon macOS, and Windows. Version tags publish the three packages and checksums only after every build succeeds. CI checks use sample data; real-account integration has been checked on Intel macOS.
 
+## Support the project
+
+If you like Codex Meter, you can [buy me a coffee](https://buymeacoffee.com/dedsec1911) to support its development and maintenance. Thanks for helping keep the project going.
+
 ## License
 
 [MIT](LICENSE)
