@@ -1,0 +1,28 @@
+{
+  "name": "codex-meter",
+  "version": "0.1.0",
+  "description": "Local Codex usage widget",
+  "main": "src/main.cjs",
+  "author": "dedsec1911",
+  "homepage": "https://github.com/dedsec1911/codex-meter",
+  "repository": { "type": "git", "url": "https://github.com/dedsec1911/codex-meter.git" },
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "icons": "electron scripts/generate-icons.cjs",
+    "test": "node --test test/*.test.cjs",
+    "test:desktop": "electron . --smoke-test --smoke-demo",
+    "check:live": "node scripts/check-live.cjs",
+    "dist": "electron-builder"
+  },
+  "devDependencies": { "electron": "44.5.1", "electron-builder": "26.15.3" },
+  "build": {
+    "appId": "com.codexmeter.widget",
+    "productName": "Codex Meter",
+    "files": ["src/**/*", "package.json"],
+    "artifactName": "Codex-Meter-${version}-${os}-${arch}.${ext}",
+    "mac": { "icon": "src/assets/icon.png", "target": ["zip"], "category": "public.app-category.utilities" },
+    "win": { "icon": "src/assets/icon.png", "target": ["nsis"] },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
+  }
+}

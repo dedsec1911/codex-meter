@@ -1,0 +1,81 @@
+name: Build and release
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS Intel
+            runner: macos-15-intel
+            platform: mac
+            arch: x64
+          - name: macOS Apple Silicon
+            runner: macos-15
+            platform: mac
+            arch: arm64
+          - name: Windows
+            runner: windows-2022
+            platform: win
+            arch: x64
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - name: Desktop smoke test (sample data, no account required)
+        run: npm run test:desktop
+        timeout-minutes: 2
+      - name: Package
+        run: npm run dist -- --${{ matrix.platform }} --${{ matrix.arch }} --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: codex-meter-${{ matrix.platform }}-${{ matrix.arch }}
+          if-no-files-found: error
+          path: |
+            dist/Codex-Meter-*.zip
+            dist/Codex-Meter-*.exe
+
+  release:
+    name: Publish release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          pattern: codex-meter-*
+          path: release
+          merge-multiple: true
+      - name: Verify assets and generate SHA-256 checksums
+        run: node scripts/release-checksums.cjs
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+      - name: Publish downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$RELEASE_TAG" release/* --verify-tag --draft --title "Codex Meter $RELEASE_TAG" --notes-file docs/release-notes.md
+          gh release edit "$RELEASE_TAG" --draft=false --latest

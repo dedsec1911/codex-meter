@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'none'">
+<title>Codex Meter</title><link rel="stylesheet" href="style.css"></head>
+<body><header><img class="mark" src="assets/icon.svg" alt="Codex Meter gauge logo"><div><h1>Codex Meter</h1><p>Codex usage at a glance.</p></div><span id="status" class="dot"></span></header>
+<main><div class="account"><span id="plan">LOCAL SESSION</span><select id="bucket" aria-label="Usage bucket"></select></div>
+<div id="windows"></div><p id="empty" hidden>No usage windows returned for this account.</p>
+<p id="error" role="alert" hidden></p></main>
+<footer><span id="updated">Connecting to Codex…</span><button id="refresh" aria-label="Refresh usage">↻ Refresh</button></footer>
+<button id="mini-mode" class="mini-toggle">↗ Mini meter · always on top</button>
+<details id="settings"><summary>Settings</summary><div class="setting-row"><label for="interval">Refresh interval</label><select id="interval">
+<option value="0">Manual only</option><option value="1">1 second</option><option value="5">5 seconds</option><option value="10">10 seconds</option><option value="15">15 seconds (recommended)</option><option value="30">30 seconds</option><option value="60">1 minute</option><option value="120">2 minutes</option><option value="300">5 minutes</option>
+</select></div><p id="interval-note">Changes save automatically.</p></details>
+<p id="hint" class="hint">Close to keep in tray</p>
+<script src="gauge.js"></script><script src="renderer.js"></script></body></html>
