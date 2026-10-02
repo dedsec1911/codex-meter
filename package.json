@@ -5,7 +5,10 @@
   "main": "src/main.cjs",
   "author": "dedsec1911",
   "homepage": "https://github.com/dedsec1911/codex-meter",
-  "repository": { "type": "git", "url": "https://github.com/dedsec1911/codex-meter.git" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dedsec1911/codex-meter.git"
+  },
   "license": "MIT",
   "scripts": {
     "start": "electron .",
@@ -15,14 +18,34 @@
     "check:live": "node scripts/check-live.cjs",
     "dist": "electron-builder"
   },
-  "devDependencies": { "electron": "44.5.1", "electron-builder": "26.15.3" },
+  "devDependencies": {
+    "electron": "44.5.1",
+    "electron-builder": "26.15.3"
+  },
   "build": {
     "appId": "com.codexmeter.widget",
     "productName": "Codex Meter",
-    "files": ["src/**/*", "package.json"],
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
     "artifactName": "Codex-Meter-${version}-${os}-${arch}.${ext}",
-    "mac": { "icon": "src/assets/icon.png", "target": ["zip"], "category": "public.app-category.utilities" },
-    "win": { "icon": "src/assets/icon.png", "target": ["nsis"] },
-    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
+    "mac": {
+      "icon": "src/assets/icon.png",
+      "target": [
+        "zip"
+      ],
+      "category": "public.app-category.utilities"
+    },
+    "win": {
+      "icon": "src/assets/icon.png",
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }

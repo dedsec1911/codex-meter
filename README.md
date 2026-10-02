@@ -27,11 +27,11 @@ Screenshots show example quotas. The two windows share the same account data and
 
 Choose the download for your computer from [Releases](https://github.com/dedsec1911/codex-meter/releases/latest).
 
-| Platform | Download | Install |
-| --- | --- | --- |
-| Intel Mac | `…-mac-x64.zip` | Unzip; move Codex Meter.app to Applications |
+| Platform                     | Download          | Install                                     |
+| ---------------------------- | ----------------- | ------------------------------------------- |
+| Intel Mac                    | `…-mac-x64.zip`   | Unzip; move Codex Meter.app to Applications |
 | Apple Silicon Mac (M series) | `…-mac-arm64.zip` | Unzip; move Codex Meter.app to Applications |
-| Windows 64-bit | `…-win-x64.exe` | Run the installer |
+| Windows 64-bit               | `…-win-x64.exe`   | Run the installer                           |
 
 Builds are **unsigned**; Mac builds are not notarized. Your OS may ask you to allow the app. Only proceed if you trust the source. Do not disable Gatekeeper or SmartScreen globally. Releases include SHA-256 checksums.
 
@@ -57,10 +57,10 @@ For a custom install, set `CODEX_METER_BIN` to the executable's absolute path. `
 The gauges show **remaining** quota, not consumed quota:
 
 | Remaining | Colour |
-| --- | --- |
-| 51–100% | Green |
-| 20–50% | Yellow |
-| 0–19% | Red |
+| --------- | ------ |
+| 51–100%   | Green  |
+| 20–50%    | Yellow |
+| 0–19%     | Red    |
 
 Thresholds use the rounded percentage shown on screen. The tray icon follows the lower available 5-hour/weekly value. Missing values show **—**. A failed refresh keeps the last snapshot and marks it stale; reaching a reset time does not invent a new quota value.
 

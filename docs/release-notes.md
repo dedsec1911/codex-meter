@@ -8,11 +8,11 @@ First release of Codex Meter: a desktop companion for your Codex 5-hour and week
 
 ### Downloads
 
-| Computer | File |
-| --- | --- |
-| Intel Mac | `Codex-Meter-0.1.0-mac-x64.zip` |
+| Computer                     | File                              |
+| ---------------------------- | --------------------------------- |
+| Intel Mac                    | `Codex-Meter-0.1.0-mac-x64.zip`   |
 | Apple Silicon Mac (M series) | `Codex-Meter-0.1.0-mac-arm64.zip` |
-| Windows 64-bit | `Codex-Meter-0.1.0-win-x64.exe` |
+| Windows 64-bit               | `Codex-Meter-0.1.0-win-x64.exe`   |
 
 On macOS, unzip and move **Codex Meter.app** to Applications. On Windows, run the installer. Install/sign in to Codex first; see the [setup guide](https://github.com/dedsec1911/codex-meter#setup).
 
