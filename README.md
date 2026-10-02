@@ -2,6 +2,8 @@
 
 # Codex Meter
 
+<a href="https://buymeacoffee.com/dedsec1911"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy me a coffee" height="50"></a>
+
 Keep your Codex 5-hour and weekly limits visible without opening the usage page.
 
 Codex Meter is a small desktop app for macOS and Windows. It reads the signed-in account through the local Codex CLI and shows how much of each usage window is left.
